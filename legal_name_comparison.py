@@ -4,6 +4,8 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from sklearn.preprocessing import LabelEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from fuzzywuzzy import fuzz
 import jellyfish
 import re
@@ -93,6 +95,9 @@ class LegalNameComparator:
         features['char_overlap'] = len(chars1.intersection(chars2)) / max(len(chars1), len(chars2)) if max(len(chars1), len(chars2)) > 0 else 0
         features['char_jaccard'] = len(chars1.intersection(chars2)) / len(chars1.union(chars2)) if len(chars1.union(chars2)) > 0 else 0
         
+        # Cosine similarity using TF-IDF
+        features['cosine_similarity'] = self.calculate_cosine_similarity(proc_name1, proc_name2)
+        
         # Common legal entity indicators
         legal_indicators1 = self.count_legal_indicators(name1)
         legal_indicators2 = self.count_legal_indicators(name2)
@@ -129,6 +134,30 @@ class LegalNameComparator:
             return 0.0
         
         return fuzz.ratio(acronym1, acronym2) / 100.0
+    
+    def calculate_cosine_similarity(self, name1, name2):
+        """Calculate cosine similarity using TF-IDF vectors"""
+        if not name1.strip() or not name2.strip():
+            return 0.0
+        
+        # Create TF-IDF vectorizer
+        vectorizer = TfidfVectorizer(
+            analyzer='word',
+            ngram_range=(1, 2),  # Use unigrams and bigrams
+            min_df=1,
+            max_df=1.0
+        )
+        
+        try:
+            # Fit and transform the names
+            tfidf_matrix = vectorizer.fit_transform([name1, name2])
+            
+            # Calculate cosine similarity
+            cosine_sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+            
+            return float(cosine_sim)
+        except:
+            return 0.0
     
     def create_training_data(self, data):
         """Create training data from Excel file"""
@@ -182,7 +211,13 @@ class LegalNameComparator:
         
         print(f"Model Accuracy: {accuracy:.4f}")
         print("\nClassification Report:")
-        print(classification_report(y_test, y_pred, target_names=['Immaterial', 'Material']))
+        
+        # Handle case where only one class is present
+        unique_classes = len(np.unique(y_test))
+        if unique_classes == 1:
+            print(f"Only one class present in test data: {np.unique(y_test)[0]}")
+        else:
+            print(classification_report(y_test, y_pred, target_names=['Immaterial', 'Material']))
         
         return accuracy
     
@@ -198,16 +233,8 @@ class LegalNameComparator:
         prediction = self.model.predict(features_df)[0]
         probability = self.model.predict_proba(features_df)[0]
         
-        result = {
-            'name1': name1,
-            'name2': name2,
-            'is_material': bool(prediction),
-            'materiality_probability': float(probability[1]),
-            'immateriality_probability': float(probability[0]),
-            'features': features
-        }
-        
-        return result
+        # Return tuple format expected by the apps
+        return bool(prediction), probability
     
     def save_model(self, filepath):
         """Save the trained model"""

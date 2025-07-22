@@ -67,6 +67,7 @@ function setupDragAndDrop() {
 }
 
 function uploadTrainingFile(file) {
+    console.log('Uploading training file:', file.name);
     const formData = new FormData();
     formData.append('file', file);
 
@@ -79,6 +80,7 @@ function uploadTrainingFile(file) {
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Training response:', data);
         showLoading('trainingLoading', false);
         
         if (data.success) {
@@ -123,15 +125,19 @@ function uploadPredictionFile(file) {
 }
 
 function showTrainingResults(data) {
+    console.log('Showing training results:', data);
+    
     document.getElementById('modelAccuracy').textContent = (data.accuracy * 100).toFixed(2) + '%';
     document.getElementById('dataPairs').textContent = data.message.split(' ')[3];
     
     if (data.feature_plot) {
+        console.log('Creating feature plot');
         const plotData = JSON.parse(data.feature_plot);
         Plotly.newPlot('featureImportancePlot', plotData.data, plotData.layout);
     }
     
     document.getElementById('trainingResults').style.display = 'block';
+    console.log('Training results displayed');
 }
 
 function showPredictionResults(data) {

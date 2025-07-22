@@ -34,24 +34,35 @@ def upload_file():
     """Handle file upload and process"""
     global comparator
     
+    print(f"Upload request received")
+    
     if 'file' not in request.files:
+        print("No file in request")
         return jsonify({'error': 'No file uploaded'}), 400
     
     file = request.files['file']
     if file.filename == '':
+        print("Empty filename")
         return jsonify({'error': 'No file selected'}), 400
     
     if not allowed_file(file.filename):
+        print(f"Invalid file type: {file.filename}")
         return jsonify({'error': 'Invalid file type. Please upload Excel file (.xlsx or .xls)'}), 400
     
     try:
+        print(f"Processing upload for file: {file.filename}")
+        
         # Save uploaded file
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
+        print(f"File saved to: {filepath}")
+        
         # Read Excel file
         df = pd.read_excel(filepath)
+        print(f"Excel file read successfully. Shape: {df.shape}")
+        print(f"Columns: {list(df.columns)}")
         
         # Validate required columns
         required_columns = ['source1', 'source2', 'source3', 'is_material']
@@ -101,15 +112,24 @@ def upload_file():
         # Clean up uploaded file
         os.remove(filepath)
         
+        # Convert numpy types to Python types for JSON serialization
+        if importance:
+            importance_serializable = {k: float(v) for k, v in importance.items()}
+        else:
+            importance_serializable = {}
+        
         return jsonify({
             'success': True,
             'message': f'Model trained successfully with {len(X)} data pairs',
             'accuracy': round(accuracy, 4),
             'feature_plot': feature_plot,
-            'feature_importance': importance
+            'feature_importance': importance_serializable
         })
         
     except Exception as e:
+        print(f"Error in upload processing: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': f'Error processing file: {str(e)}'}), 500
 
 @app.route('/predict', methods=['POST'])
@@ -211,7 +231,7 @@ def download_predictions():
     """Download predictions Excel file"""
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'predictions.xlsx')
     if os.path.exists(filepath):
-        return send_file(filepath, as_attachment=True, download_name='predictions.xlsx')
+        return send_file(filepath, as_attachment=True, attachment_filename='predictions.xlsx')
     else:
         return jsonify({'error': 'No predictions file available'}), 404
 
