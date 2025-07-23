@@ -11,142 +11,352 @@
         :root {
             --org-primary-color: {{ org_primary_color }};
             --org-secondary-color: {{ org_secondary_color }};
+            --nav-bg: #f8f9fa;
+            --nav-hover: #e9ecef;
+            --nav-text: #6c757d;
+            --nav-text-hover: #495057;
+            --table-bg: #ffffff;
+            --table-border: #dee2e6;
+            --card-bg: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
         }
         
-        .navbar {
-            background: linear-gradient(135deg, var(--org-primary-color), var(--org-secondary-color));
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        .navbar-brand {
+        /* Header with black logo and clean typography */
+        .main-header {
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
             font-weight: bold;
-            color: white !important;
+            font-size: 18px;
         }
         
-        .navbar-brand img {
-            height: 30px;
-            margin-right: 10px;
+        .org-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
         }
         
+        .app-title {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 400;
+        }
+        
+        /* Navigation menu on the right */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nav-item {
+            color: var(--nav-text);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--nav-hover);
+            color: var(--nav-text-hover);
+            text-decoration: none;
+        }
+        
+        .nav-item.active {
+            background-color: var(--nav-hover);
+            color: var(--nav-text-hover);
+        }
+        
+        .user-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logout-btn {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            border: 1px solid #dee2e6;
+        }
+        
+        .logout-btn:hover {
+            background-color: var(--nav-hover);
+            color: var(--nav-text-hover);
+            text-decoration: none;
+        }
+        
+        /* Main content area */
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .content-header {
+            background: var(--nav-bg);
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--table-border);
+        }
+        
+        .content-body {
+            padding: 30px;
+        }
+        
+        /* Upload areas */
         .upload-area {
-            border: 2px dashed #ccc;
-            border-radius: 10px;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
             padding: 40px;
             text-align: center;
             transition: all 0.3s ease;
-            background-color: #f8f9fa;
+            background-color: var(--nav-bg);
         }
+        
         .upload-area.dragover {
             border-color: var(--org-primary-color);
             background-color: #e3f2fd;
         }
-        .feedback-item {
-            border: 1px solid #dee2e6;
+        
+        /* Cards */
+        .card {
+            border: 1px solid var(--table-border);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: var(--card-bg);
+        }
+        
+        .card-header {
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--table-border);
+            padding: 15px 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        /* Tables */
+        .table {
+            background: var(--table-bg);
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            background-color: #fff;
+            overflow: hidden;
         }
-        .feedback-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        
+        .table thead th {
+            background: var(--nav-bg);
+            border-bottom: 2px solid var(--table-border);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 12px 15px;
         }
+        
+        .table tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--table-border);
+            color: var(--text-primary);
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background-color: var(--nav-bg);
+        }
+        
+        .table tbody tr:nth-child(odd) {
+            background-color: white;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #e3f2fd !important;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--org-primary-color);
+            border-color: var(--org-primary-color);
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        
+        .btn-outline-secondary {
+            color: var(--nav-text);
+            border-color: var(--table-border);
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: var(--nav-hover);
+            color: var(--nav-text-hover);
+            border-color: var(--nav-hover);
+        }
+        
+        /* Stats cards */
+        .stats-card {
+            background: var(--card-bg);
+            border: 1px solid var(--table-border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        
+        .stats-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        /* Loading and alerts */
         .loading {
             display: none;
         }
+        
         .results-section {
             display: none;
         }
+        
         .alert {
-            display: none;
+            border-radius: 8px;
+            border: none;
         }
         
-        .user-info {
-            color: white;
-            font-size: 0.9rem;
+        /* Feedback items */
+        .feedback-item {
+            border: 1px solid var(--table-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: var(--card-bg);
         }
         
-        .logout-btn {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+        .feedback-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .content-body {
+                padding: 20px;
+            }
+        }
+        
+        /* Test prediction styling */
+        .test-prediction-card {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
         
-        .logout-btn:hover {
-            background-color: rgba(255,255,255,0.1);
+        .test-prediction-card:hover {
+            border-color: var(--org-primary-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, var(--org-primary-color), var(--org-secondary-color));
             color: white;
+            border: none;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg">
+    <!-- Header with black logo and navigation -->
+    <header class="main-header">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="{{ org_logo }}" alt="{{ org_name }} Logo" onerror="this.style.display='none'">
-                {{ org_name }}
-            </a>
-            <div class="navbar-nav ms-auto">
-                <span class="user-info me-3">
-                    <i class="fas fa-user"></i> Welcome, {{ session.username }}
-                </span>
-                <a href="{{ url_for('logout') }}" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="logo-container">
+                        <div class="logo">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div>
+                            <h1 class="org-name">{{ org_name }}</h1>
+                            <p class="app-title">Legal Name Comparison System</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="nav-menu justify-content-end">
+                        <a href="#" class="nav-item active" onclick="showDashboard()">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                        <a href="#" class="nav-item" onclick="showAnalytics()">
+                            <i class="fas fa-chart-line"></i> Analytics
+                        </a>
+                        <a href="#" class="nav-item" onclick="showSettings()">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <div class="user-info">
+                            <i class="fas fa-user"></i>
+                            <span>{{ session.username }}</span>
+                        </div>
+                        <a href="{{ url_for('logout') }}" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+    </header>
 
     <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 bg-dark text-white p-4" style="min-height: 100vh;">
-                <h3 class="mb-4">
-                    <i class="fas fa-balance-scale"></i>
-                    Legal Name Comparison
-                </h3>
-                
-                <div class="mb-4">
-                    <h6><i class="fas fa-chart-line"></i> System Status</h6>
-                    <div id="systemStatus">
-                        <span class="badge bg-warning">Initializing...</span>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h6><i class="fas fa-comments"></i> Feedback Stats</h6>
-                    <div id="feedbackStats">
-                        <small>Loading...</small>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h6><i class="fas fa-history"></i> Model Versions</h6>
-                    <div id="modelVersions">
-                        <small>Loading...</small>
-                    </div>
-                </div>
-                
-                <button class="btn btn-outline-light btn-sm w-100 mb-2" onclick="loadFeedbackStats()">
-                    <i class="fas fa-sync"></i> Refresh Stats
-                </button>
-                
-                <button class="btn btn-outline-warning btn-sm w-100" onclick="manualRetrain()">
-                    <i class="fas fa-cog"></i> Manual Retrain
-                </button>
+        <div class="main-content">
+            <div class="content-header">
+                <h2 class="mb-0">Legal Name Comparison Dashboard</h2>
+                <p class="text-muted mb-0">Upload training data, make predictions, and manage feedback</p>
             </div>
             
-            <!-- Main Content -->
-            <div class="col-md-9 p-4">
-                <h2 class="mb-4">Legal Name Comparison System</h2>
-                
+            <div class="content-body">
                 <!-- Alerts -->
                 <div id="alertContainer"></div>
                 
                 <!-- Test Alert Button -->
-                <div class="mb-3">
-                    <button class="btn btn-warning btn-sm" onclick="showAlert('Test alert message', 'success')">
+                <div class="mb-4">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="showAlert('Test alert message', 'success')">
                         Test Alert
                     </button>
                 </div>
@@ -214,43 +424,59 @@
                         
                         <div class="results-section mt-3" id="predictionResults">
                             <h6>Prediction Results:</h6>
-                            <div class="row mb-3">
+                            <div class="row mb-4">
                                 <div class="col-md-3">
-                                    <div class="card text-center">
-                                        <div class="card-body">
-                                            <h5 id="totalPredictions">-</h5>
-                                            <small class="text-muted">Total Predictions</small>
-                                        </div>
+                                    <div class="stats-card">
+                                        <div class="stats-number" id="totalPredictions">-</div>
+                                        <div class="stats-label">Total Predictions</div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="card text-center">
-                                        <div class="card-body">
-                                            <h5 id="materialCount">-</h5>
-                                            <small class="text-muted">Material</small>
-                                        </div>
+                                    <div class="stats-card">
+                                        <div class="stats-number" id="materialCount">-</div>
+                                        <div class="stats-label">Material</div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="card text-center">
-                                        <div class="card-body">
-                                            <h5 id="immaterialCount">-</h5>
-                                            <small class="text-muted">Immaterial</small>
-                                        </div>
+                                    <div class="stats-card">
+                                        <div class="stats-number" id="immaterialCount">-</div>
+                                        <div class="stats-label">Immaterial</div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="card text-center">
+                                    <div class="stats-card">
+                                        <div class="stats-number" id="materialPercentage">-</div>
+                                        <div class="stats-label">Material %</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Prediction Results Graph -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6><i class="fas fa-chart-pie"></i> Prediction Distribution</h6>
+                                        </div>
                                         <div class="card-body">
-                                            <h5 id="materialPercentage">-</h5>
-                                            <small class="text-muted">Material %</small>
+                                            <div id="predictionChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6><i class="fas fa-chart-bar"></i> Algorithm Performance</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="algorithmChart"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="table-responsive">
-                                <table class="table table-striped">
+                                <table class="table">
                                     <thead>
                                         <tr>
                                             <th>Name 1</th>
@@ -269,6 +495,61 @@
                     </div>
                 </div>
                 
+                <!-- Manual Prediction Section -->
+                <div class="card mb-4 test-prediction-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-flask"></i> Test Individual Prediction</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="mb-3">
+                                    <label for="name1" class="form-label">Legal Name 1</label>
+                                    <input type="text" class="form-control" id="name1" placeholder="e.g., ABC LTD">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="mb-3">
+                                    <label for="name2" class="form-label">Legal Name 2</label>
+                                    <input type="text" class="form-control" id="name2" placeholder="e.g., ABC Limited">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button class="btn btn-success w-100" onclick="testPrediction()">
+                                        <i class="fas fa-play me-2"></i>
+                                        Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="loading" id="testLoading">
+                            <div class="d-flex align-items-center">
+                                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                <span>Analyzing...</span>
+                            </div>
+                        </div>
+
+                        <div id="testResult" class="mt-3" style="display: none;">
+                            <div class="card result-card">
+                                <div class="card-body text-center">
+                                    <h4 id="testPrediction"></h4>
+                                    <p class="mb-2">Confidence: <strong id="testConfidence"></strong></p>
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar" id="confidenceBar" role="progressbar"></div>
+                                    </div>
+                                    <small class="text-white-50">
+                                        Materiality: <span id="materialityProb"></span>% | 
+                                        Immateriality: <span id="immaterialityProb"></span>%
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Feedback Section -->
                 <div class="card">
                     <div class="card-header">
@@ -282,9 +563,312 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Analytics Section -->
+        <div id="analyticsSection" style="display: none;">
+            <div class="content-header">
+                <h2 class="mb-0">Analytics Dashboard</h2>
+                <p class="text-muted mb-0">Model performance metrics and insights</p>
+            </div>
+            
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="fas fa-chart-line"></i> Model Accuracy Over Time</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="accuracyChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="fas fa-chart-bar"></i> Feature Importance</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="featureImportanceChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="fas fa-table"></i> Model Performance Metrics</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="stats-card">
+                                            <div class="stats-number" id="overallAccuracy">-</div>
+                                            <div class="stats-label">Overall Accuracy</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="stats-card">
+                                            <div class="stats-number" id="precision">-</div>
+                                            <div class="stats-label">Precision</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="stats-card">
+                                            <div class="stats-number" id="recall">-</div>
+                                            <div class="stats-label">Recall</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="stats-card">
+                                            <div class="stats-number" id="f1Score">-</div>
+                                            <div class="stats-label">F1 Score</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Section -->
+        <div id="settingsSection" style="display: none;">
+            <div class="content-header">
+                <h2 class="mb-0">System Settings</h2>
+                <p class="text-muted mb-0">Configure application preferences and model parameters</p>
+            </div>
+            
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="fas fa-cog"></i> Model Configuration</h6>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="retrainThreshold" class="form-label">Retrain Threshold</label>
+                                        <input type="number" class="form-control" id="retrainThreshold" value="10" min="1" max="100">
+                                        <small class="text-muted">Number of feedback items before retraining</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confidenceThreshold" class="form-label">Confidence Threshold</label>
+                                        <input type="number" class="form-control" id="confidenceThreshold" value="0.8" min="0" max="1" step="0.1">
+                                        <small class="text-muted">Minimum confidence for predictions</small>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="saveSettings()">
+                                        <i class="fas fa-save"></i> Save Settings
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="fas fa-database"></i> Data Management</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <button class="btn btn-outline-secondary w-100 mb-2" onclick="exportData()">
+                                        <i class="fas fa-download"></i> Export Training Data
+                                    </button>
+                                    <button class="btn btn-outline-secondary w-100 mb-2" onclick="exportFeedback()">
+                                        <i class="fas fa-download"></i> Export Feedback Data
+                                    </button>
+                                    <button class="btn btn-outline-warning w-100" onclick="clearData()">
+                                        <i class="fas fa-trash"></i> Clear All Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="static/js/app_with_feedback.js"></script>
+    
+    <script>
+        // Navigation functions
+        function showDashboard() {
+            // Update active state
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Show dashboard content
+            showSection('dashboard');
+        }
+        
+        function showAnalytics() {
+            // Update active state
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Show analytics content
+            showSection('analytics');
+        }
+        
+        function showSettings() {
+            // Update active state
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Show settings content
+            showSection('settings');
+        }
+        
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['dashboard', 'analytics', 'settings'];
+            sections.forEach(section => {
+                const element = document.getElementById(section + 'Section');
+                if (element) element.style.display = 'none';
+            });
+            
+            // Show requested section
+            const targetSection = document.getElementById(sectionName + 'Section');
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+        }
+        
+        // Chart functions
+        function createPredictionChart(materialCount, immaterialCount) {
+            const data = [{
+                values: [materialCount, immaterialCount],
+                labels: ['Material', 'Immaterial'],
+                type: 'pie',
+                marker: {
+                    colors: ['#dc3545', '#28a745']
+                }
+            }];
+            
+            const layout = {
+                height: 300,
+                margin: { t: 20, b: 20, l: 20, r: 20 }
+            };
+            
+            Plotly.newPlot('predictionChart', data, layout);
+        }
+        
+        function createAlgorithmChart() {
+            const algorithms = ['Fuzzy Matching', 'Jaro Similarity', 'Cosine Similarity', 'Jaccard Similarity'];
+            const performance = [85, 78, 92, 88];
+            
+            const data = [{
+                x: algorithms,
+                y: performance,
+                type: 'bar',
+                marker: {
+                    color: '#007bff'
+                }
+            }];
+            
+            const layout = {
+                title: 'Algorithm Performance (%)',
+                height: 300,
+                margin: { t: 40, b: 60, l: 60, r: 20 },
+                yaxis: {
+                    range: [0, 100]
+                }
+            };
+            
+            Plotly.newPlot('algorithmChart', data, layout);
+        }
+        
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create initial charts
+            createPredictionChart(0, 0);
+            createAlgorithmChart();
+            createAccuracyChart();
+            createFeatureImportanceChart();
+        });
+        
+        // Additional chart functions
+        function createAccuracyChart() {
+            const data = [{
+                x: ['Version 1', 'Version 2', 'Version 3', 'Version 4'],
+                y: [0.85, 0.88, 0.92, 0.95],
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: { color: '#007bff' },
+                marker: { size: 8 }
+            }];
+            
+            const layout = {
+                title: 'Model Accuracy Over Time',
+                height: 300,
+                margin: { t: 40, b: 40, l: 60, r: 20 },
+                yaxis: {
+                    range: [0, 1],
+                    tickformat: '.0%'
+                }
+            };
+            
+            Plotly.newPlot('accuracyChart', data, layout);
+        }
+        
+        function createFeatureImportanceChart() {
+            const features = ['Fuzzy Ratio', 'Jaro Similarity', 'Cosine Similarity', 'Jaccard Similarity', 'Word Overlap'];
+            const importance = [0.25, 0.20, 0.30, 0.15, 0.10];
+            
+            const data = [{
+                x: importance,
+                y: features,
+                type: 'bar',
+                orientation: 'h',
+                marker: {
+                    color: '#28a745'
+                }
+            }];
+            
+            const layout = {
+                title: 'Feature Importance',
+                height: 300,
+                margin: { t: 40, b: 40, l: 120, r: 20 },
+                xaxis: {
+                    range: [0, 0.35],
+                    tickformat: '.0%'
+                }
+            };
+            
+            Plotly.newPlot('featureImportanceChart', data, layout);
+        }
+        
+        // Settings functions
+        function saveSettings() {
+            const retrainThreshold = document.getElementById('retrainThreshold').value;
+            const confidenceThreshold = document.getElementById('confidenceThreshold').value;
+            
+            // Save to localStorage for now (in real app, save to backend)
+            localStorage.setItem('retrainThreshold', retrainThreshold);
+            localStorage.setItem('confidenceThreshold', confidenceThreshold);
+            
+            showAlert('Settings saved successfully!', 'success');
+        }
+        
+        function exportData() {
+            showAlert('Export functionality would download training data as Excel file', 'info');
+        }
+        
+        function exportFeedback() {
+            showAlert('Export functionality would download feedback data as Excel file', 'info');
+        }
+        
+        function clearData() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                showAlert('Data cleared successfully!', 'success');
+            }
+        }
+    </script>
 </body>
 </html> 

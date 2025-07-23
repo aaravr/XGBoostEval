@@ -1,4 +1,13 @@
 // Legal Name Comparison System with Feedback Loop
+
+// Utility function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Global variables
 let currentResults = [];
 
 // Initialize the application
@@ -132,14 +141,42 @@ function showTrainingResults(data) {
 function showPredictionResults(data) {
     currentResults = data.results;
     
-    // Update summary
+    // Update stats
     document.getElementById('totalPredictions').textContent = data.summary.total_predictions;
     document.getElementById('materialCount').textContent = data.summary.material_count;
     document.getElementById('immaterialCount').textContent = data.summary.immaterial_count;
     document.getElementById('materialPercentage').textContent = data.summary.material_percentage + '%';
     
-    // Update results table
-    updateResultsTable(data.results);
+    // Update prediction chart
+    if (typeof createPredictionChart === 'function') {
+        createPredictionChart(data.summary.material_count, data.summary.immaterial_count);
+    }
+    
+    // Populate table
+    const tableBody = document.getElementById('resultsTableBody');
+    tableBody.innerHTML = '';
+    
+    data.results.forEach((result, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${escapeHtml(result.name1)}</td>
+            <td>${escapeHtml(result.name2)}</td>
+            <td><span class="badge ${result.is_material ? 'bg-danger' : 'bg-success'}">${result.prediction}</span></td>
+            <td>${(result.materiality_probability * 100).toFixed(1)}%</td>
+            <td>${(result.immateriality_probability * 100).toFixed(1)}%</td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-sm btn-success me-1" onclick="submitFeedback(${index}, true)">
+                        <i class="fas fa-check"></i> Correct
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="submitFeedback(${index}, false)">
+                        <i class="fas fa-times"></i> Wrong
+                    </button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
     
     document.getElementById('predictionResults').style.display = 'block';
 }
@@ -358,30 +395,104 @@ function showAlert(message, type) {
     }, 5000);
 }
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
 // Test prediction function
 function testPrediction() {
-    const name1 = document.getElementById('testName1').value;
-    const name2 = document.getElementById('testName2').value;
+    console.log('testPrediction function called');
+    
+    // Test if elements exist
+    const name1Element = document.getElementById('name1');
+    const name2Element = document.getElementById('name2');
+    
+    console.log('name1Element:', name1Element);
+    console.log('name2Element:', name2Element);
+    
+    if (!name1Element || !name2Element) {
+        console.error('Could not find name input elements');
+        showAlert('Error: Could not find input elements', 'error');
+        return;
+    }
+    
+    const name1 = name1Element.value;
+    const name2 = name2Element.value;
+    
+    console.log('Name1:', name1);
+    console.log('Name2:', name2);
     
     if (!name1 || !name2) {
         showAlert('Please enter both names', 'warning');
         return;
     }
     
-    // Create a temporary file for testing
-    const testData = [
-        { name1: name1, name2: name2 }
-    ];
+    // Show loading
+    showLoading('testLoading', true);
+    hideResults('testResult');
     
-    const csvContent = 'name1,name2\n' + testData.map(row => `${row.name1},${row.name2}`).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const file = new File([blob], 'test_prediction.csv', { type: 'text/csv' });
+    console.log('Sending request to /test_prediction');
     
-    uploadPredictionFile(file);
+    // First check if we have a trained model
+    fetch('/model/versions')
+    .then(response => {
+        console.log('Model versions response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Model versions data:', data);
+        if (!data.versions || data.versions.length === 0) {
+            showAlert('No trained model available. Please train a model first.', 'warning');
+            return Promise.reject('No model available');
+        }
+        
+        // Send single prediction request
+        return fetch('/test_prediction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name1: name1,
+                name2: name2
+            })
+        });
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        showLoading('testLoading', false);
+        
+        if (data.success) {
+            const result = data.result;
+            const isMaterial = result.is_material;
+            const materialityProb = (result.materiality_probability * 100).toFixed(1);
+            const immaterialityProb = (result.immateriality_probability * 100).toFixed(1);
+            const confidence = Math.max(result.materiality_probability, result.immateriality_probability) * 100;
+            
+            // Update result display
+            document.getElementById('testPrediction').textContent = isMaterial ? 'MATERIAL CHANGE' : 'IMMATERIAL CHANGE';
+            document.getElementById('testPrediction').className = isMaterial ? 'text-danger' : 'text-success';
+            document.getElementById('testConfidence').textContent = confidence.toFixed(1) + '%';
+            document.getElementById('materialityProb').textContent = materialityProb;
+            document.getElementById('immaterialityProb').textContent = immaterialityProb;
+            
+            // Update progress bar
+            const progressBar = document.getElementById('confidenceBar');
+            progressBar.style.width = confidence + '%';
+            progressBar.className = `progress-bar ${confidence > 80 ? 'bg-success' : confidence > 60 ? 'bg-warning' : 'bg-danger'}`;
+            
+            // Show result
+            document.getElementById('testResult').style.display = 'block';
+        } else {
+            showAlert(data.error || 'Error making prediction', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        showLoading('testLoading', false);
+        showAlert('Error making prediction: ' + error.message, 'error');
+    });
 } 

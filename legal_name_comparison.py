@@ -164,9 +164,29 @@ class LegalNameComparator:
         features_list = []
         labels = []
         
+        # Get column names or indices for accessing data
+        # Handle both column names and integer indices
+        try:
+            # Try to access by column names first
+            source1_col = 'source1'
+            source2_col = 'source2' 
+            source3_col = 'source3'
+            is_material_col = 'is_material'
+            
+            # Test if columns exist by name
+            _ = data[source1_col].iloc[0]
+        except (KeyError, IndexError):
+            # If column names don't work, use integer indices
+            # Assuming standard order: source1, source2, source3, is_material
+            source1_col = 0
+            source2_col = 1
+            source3_col = 2
+            is_material_col = 3
+        
         # Assuming the Excel has columns: source1, source2, source3, is_material
         for _, row in data.iterrows():
-            sources = [row['source1'], row['source2'], row['source3']]
+            # Access columns using the determined method
+            sources = [row[source1_col], row[source2_col], row[source3_col]]
             sources = [s for s in sources if pd.notna(s) and str(s).strip() != '']
             
             if len(sources) < 2:
@@ -177,7 +197,7 @@ class LegalNameComparator:
                 for j in range(i + 1, len(sources)):
                     features = self.extract_features(sources[i], sources[j])
                     features_list.append(features)
-                    labels.append(row['is_material'])
+                    labels.append(row[is_material_col])
         
         return pd.DataFrame(features_list), labels
     
@@ -230,8 +250,14 @@ class LegalNameComparator:
         features_df = pd.DataFrame([features])
         
         # Make prediction
-        prediction = self.model.predict(features_df)[0]
-        probability = self.model.predict_proba(features_df)[0]
+        prediction = self.model.predict(features_df)
+        probability = self.model.predict_proba(features_df)
+        
+        # Handle joblib 1.5.0 compatibility - ensure we get the first element properly
+        if isinstance(prediction, (list, np.ndarray)):
+            prediction = prediction[0]
+        if isinstance(probability, (list, np.ndarray)):
+            probability = probability[0]
         
         # Return tuple format expected by the apps
         return bool(prediction), probability
@@ -334,8 +360,8 @@ if __name__ == "__main__":
     
     for name1, name2 in test_cases:
         result = comparator.predict_materiality(name1, name2)
-        print(f"{name1} vs {name2}: {'Material' if result['is_material'] else 'Immaterial'} "
-              f"(confidence: {result['materiality_probability']:.3f})")
+        print(f"{name1} vs {name2}: {'Material' if result[0] else 'Immaterial'} "
+              f"(confidence: {result[1][1]:.3f})")
     
     # Feature importance
     importance = comparator.get_feature_importance()

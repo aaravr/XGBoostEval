@@ -168,19 +168,35 @@ def predict():
         
         # Make predictions
         results = []
+        
+        # Get column names or indices for accessing data
+        # Handle both column names and integer indices
+        try:
+            # Try to access by column names first
+            name1_col = 'name1'
+            name2_col = 'name2'
+            
+            # Test if columns exist by name
+            _ = df[name1_col].iloc[0]
+        except (KeyError, IndexError):
+            # If column names don't work, use integer indices
+            # Assuming standard order: name1, name2
+            name1_col = 0
+            name2_col = 1
+        
         for _, row in df.iterrows():
-            name1 = str(row['name1']) if pd.notna(row['name1']) else ''
-            name2 = str(row['name2']) if pd.notna(row['name2']) else ''
+            name1 = str(row[name1_col]) if pd.notna(row[name1_col]) else ''
+            name2 = str(row[name2_col]) if pd.notna(row[name2_col]) else ''
             
             if name1.strip() and name2.strip():
-                result = comparator.predict_materiality(name1, name2)
+                prediction, probabilities = comparator.predict_materiality(name1, name2)
                 results.append({
                     'name1': name1,
                     'name2': name2,
-                    'is_material': result['is_material'],
-                    'materiality_probability': round(result['materiality_probability'], 4),
-                    'immateriality_probability': round(result['immateriality_probability'], 4),
-                    'prediction': 'Material' if result['is_material'] else 'Immaterial'
+                    'is_material': prediction,
+                    'materiality_probability': round(float(probabilities[1]), 4),
+                    'immateriality_probability': round(float(probabilities[0]), 4),
+                    'prediction': 'Material' if prediction else 'Immaterial'
                 })
         
         # Create results DataFrame
@@ -251,16 +267,16 @@ def test_prediction():
         return jsonify({'error': 'Both names are required'}), 400
     
     try:
-        result = comparator.predict_materiality(name1, name2)
+        prediction, probabilities = comparator.predict_materiality(name1, name2)
         return jsonify({
             'success': True,
             'result': {
-                'name1': result['name1'],
-                'name2': result['name2'],
-                'is_material': result['is_material'],
-                'materiality_probability': round(result['materiality_probability'], 4),
-                'immateriality_probability': round(result['immateriality_probability'], 4),
-                'prediction': 'Material' if result['is_material'] else 'Immaterial'
+                'name1': name1,
+                'name2': name2,
+                'is_material': prediction,
+                'materiality_probability': round(float(probabilities[1]), 4),
+                'immateriality_probability': round(float(probabilities[0]), 4),
+                'prediction': 'Material' if prediction else 'Immaterial'
             }
         })
     except Exception as e:

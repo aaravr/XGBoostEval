@@ -464,9 +464,25 @@ def predict():
         
         # Make predictions
         results = []
+        
+        # Get column names or indices for accessing data
+        # Handle both column names and integer indices
+        try:
+            # Try to access by column names first
+            name1_col = 'name1'
+            name2_col = 'name2'
+            
+            # Test if columns exist by name
+            _ = df[name1_col].iloc[0]
+        except (KeyError, IndexError):
+            # If column names don't work, use integer indices
+            # Assuming standard order: name1, name2
+            name1_col = 0
+            name2_col = 1
+        
         for _, row in df.iterrows():
-            name1 = str(row['name1'])
-            name2 = str(row['name2'])
+            name1 = str(row[name1_col])
+            name2 = str(row[name2_col])
             
             prediction, probabilities = comparator.predict_materiality(name1, name2)
             
@@ -504,6 +520,48 @@ def predict():
     except Exception as e:
         logger.error(f"Prediction error: {str(e)}")
         return jsonify({'error': f'Error processing predictions: {str(e)}'}), 500
+
+@app.route('/test_prediction', methods=['POST'])
+@login_required
+def test_prediction():
+    """Handle single name pair prediction for manual evaluation"""
+    global comparator
+    
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No JSON data provided'}), 400
+        
+        name1 = data.get('name1')
+        name2 = data.get('name2')
+        
+        if not name1 or not name2:
+            return jsonify({'error': 'Both name1 and name2 are required'}), 400
+        
+        if comparator is None:
+            return jsonify({'error': 'No trained model available. Please train a model first.'}), 400
+        
+        # Make prediction
+        prediction, probabilities = comparator.predict_materiality(name1, name2)
+        
+        result = {
+            'name1': name1,
+            'name2': name2,
+            'prediction': 'Material' if prediction else 'Immaterial',
+            'is_material': prediction,
+            'materiality_probability': float(probabilities[1]),
+            'immateriality_probability': float(probabilities[0]),
+            'prediction_id': f"{name1}_{name2}_{int(time.time())}"
+        }
+        
+        return jsonify({
+            'success': True,
+            'result': result
+        })
+    
+    except Exception as e:
+        logger.error(f"Test prediction error: {str(e)}")
+        return jsonify({'error': f'Error making test prediction: {str(e)}'}), 500
 
 @app.route('/feedback', methods=['POST'])
 @login_required

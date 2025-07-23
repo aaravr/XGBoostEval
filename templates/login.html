@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - {{ org_name }}</title>
+    <title>{{ org_name }} - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --org-primary-color: {{ org_primary_color }};
             --org-secondary-color: {{ org_secondary_color }};
+            --nav-bg: #f8f9fa;
+            --nav-hover: #e9ecef;
+            --nav-text: #6c757d;
+            --nav-text-hover: #495057;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
         }
         
         body {
-            background: linear-gradient(135deg, var(--org-primary-color), var(--org-secondary-color));
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -21,37 +28,54 @@
         }
         
         .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            max-width: 400px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 40px;
             width: 100%;
+            max-width: 400px;
         }
         
-        .org-logo {
-            text-align: center;
-            margin-bottom: 2rem;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
         }
         
-        .org-logo img {
-            max-height: 80px;
-            max-width: 200px;
+        .logo {
+            width: 60px;
+            height: 60px;
+            background-color: #000;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
         }
         
         .org-name {
-            color: var(--org-primary-color);
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 1rem;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .app-title {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 400;
         }
         
         .form-control {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            padding: 12px 15px;
-            transition: all 0.3s ease;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 16px;
         }
         
         .form-control:focus {
@@ -62,33 +86,50 @@
         .btn-primary {
             background-color: var(--org-primary-color);
             border-color: var(--org-primary-color);
-            border-radius: 10px;
-            padding: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
         }
         
         .btn-primary:hover {
-            background-color: var(--org-secondary-color);
-            border-color: var(--org-secondary-color);
-            transform: translateY(-2px);
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
         
-        .btn-azure {
-            background-color: #0078d4;
-            border-color: #0078d4;
-            color: white;
+        .btn-outline-secondary {
+            color: var(--nav-text);
+            border-color: #dee2e6;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
         }
         
-        .btn-azure:hover {
-            background-color: #106ebe;
-            border-color: #106ebe;
-            color: white;
+        .btn-outline-secondary:hover {
+            background-color: var(--nav-hover);
+            color: var(--nav-text-hover);
+            border-color: var(--nav-hover);
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .input-group-text {
+            background-color: var(--nav-bg);
+            border: 1px solid #dee2e6;
+            border-right: none;
+            color: var(--text-secondary);
+        }
+        
+        .input-group .form-control {
+            border-left: none;
         }
         
         .divider {
             text-align: center;
-            margin: 1.5rem 0;
+            margin: 20px 0;
             position: relative;
         }
         
@@ -104,99 +145,72 @@
         
         .divider span {
             background: white;
-            padding: 0 1rem;
-            color: #6c757d;
-        }
-        
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-        
-        .input-group-text {
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-right: none;
-        }
-        
-        .input-group .form-control {
-            border-left: none;
+            padding: 0 15px;
+            color: var(--text-secondary);
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="org-logo">
-            <!-- TODO: Replace with your organization's logo -->
-            <img src="{{ org_logo }}" alt="{{ org_name }} Logo" onerror="this.style.display='none'">
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <div>
+                <h1 class="org-name">{{ org_name }}</h1>
+                <p class="app-title">Legal Name Comparison System</p>
+            </div>
         </div>
         
-        <div class="org-name">
-            {{ org_name }}
-        </div>
-        
-        <h4 class="text-center mb-4">Legal Name Comparison System</h4>
-        
-        {% if error %}
-        <div class="alert alert-danger" role="alert">
-            <i class="fas fa-exclamation-triangle"></i> {{ error }}
-        </div>
-        {% endif %}
+        <h4 class="text-center mb-4">Sign In</h4>
         
         <form method="POST" action="{{ url_for('login') }}">
             <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="fas fa-user"></i>
                     </span>
-                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                    <input type="text" class="form-control" id="username" name="username" required>
                 </div>
             </div>
             
-            <div class="mb-3">
+            <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="fas fa-lock"></i>
                     </span>
-                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    <input type="password" class="form-control" id="password" name="password" required>
                 </div>
             </div>
             
             <button type="submit" class="btn btn-primary w-100 mb-3">
-                <i class="fas fa-sign-in-alt"></i> Sign In
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </button>
+            
+            <div class="divider">
+                <span>or</span>
+            </div>
+            
+            <button type="button" class="btn btn-outline-secondary w-100">
+                <i class="fab fa-microsoft me-2"></i>Sign in with Azure AD
             </button>
         </form>
         
-        <div class="divider">
-            <span>or</span>
+        {% if error %}
+        <div class="alert alert-danger mt-3" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
         </div>
-        
-        <!-- TODO: Implement Azure AD authentication -->
-        <button type="button" class="btn btn-azure w-100" onclick="azureLogin()">
-            <i class="fab fa-microsoft"></i> Sign in with Microsoft
-        </button>
+        {% endif %}
         
         <div class="text-center mt-4">
             <small class="text-muted">
-                <!-- TODO: Add your organization's terms and privacy policy links -->
-                By signing in, you agree to our 
-                <a href="#" style="color: var(--org-primary-color);">Terms of Service</a> and 
-                <a href="#" style="color: var(--org-primary-color);">Privacy Policy</a>
+                <i class="fas fa-info-circle me-1"></i>
+                Default credentials: admin / admin123
             </small>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function azureLogin() {
-            // TODO: Implement Azure AD authentication
-            alert('Azure AD authentication is not implemented yet. Please use the basic login.');
-        }
-        
-        // Auto-focus on username field
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('input[name="username"]').focus();
-        });
-    </script>
 </body>
 </html> 
